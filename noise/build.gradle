@@ -1,15 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
-    //id 'com.github.dcendents.android-maven'
 }
-
-group = 'com.github.paramsen'
-
-def VERSION_NAME = "2.0.0"
-def VERSION_CODE = 7
-
-version = VERSION_NAME
 
 android {
     namespace 'com.github.paramsen'
@@ -17,7 +9,7 @@ android {
     defaultConfig {
         minSdkVersion min_sdk
         targetSdkVersion target_sdk
-        versionCode VERSION_CODE
+        versionCode Integer.parseInt(VERSION_CODE)
         versionName VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -27,6 +19,14 @@ android {
             }
         }
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+
     compileOptions {
         sourceCompatibility java_version
         targetCompatibility java_version
@@ -56,22 +56,23 @@ android {
             throw new Exception('Initialize git submodules before building (read "development" section in readme)')
     }
 
-    /* jitpack.io conf */
-    task sourcesJar(type: Jar) {
-        from android.sourceSets.main.java.srcDirs
-        archiveClassifier = 'sources'
-    }
-    task javadoc(type: Javadoc) {
-        failOnError false
-        source = android.sourceSets.main.java.sourceFiles
-        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    }
-    task javadocJar(type: Jar, dependsOn: javadoc) {
-        archiveClassifier = 'javadoc'
-        from javadoc.destinationDir
-    }
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
+}
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = GROUP
+                artifactId = POM_ARTIFACT_ID
+                version = VERSION_NAME
+            }
+        }
     }
 }
