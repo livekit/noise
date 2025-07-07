@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
 
+project(noise)
+
 add_library(noise
         SHARED
         src/main/native/noise.c
