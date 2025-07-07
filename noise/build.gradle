@@ -1,6 +1,8 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'com.github.dcendents.android-maven'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    //id 'com.github.dcendents.android-maven'
+}
 
 group = 'com.github.paramsen'
 
@@ -10,20 +12,27 @@ def VERSION_CODE = 7
 version = VERSION_NAME
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.0'
+    namespace 'com.github.paramsen'
+    compileSdk compile_sdk
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion min_sdk
+        targetSdkVersion target_sdk
         versionCode VERSION_CODE
         versionName VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_STL=none"
+                arguments "-DANDROID_STL=none", "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
             }
         }
+    }
+    compileOptions {
+        sourceCompatibility java_version
+        targetCompatibility java_version
+    }
+    kotlinOptions {
+        jvmTarget = java_version
     }
     buildTypes {
         release {
@@ -43,7 +52,7 @@ android {
 
     /* verify that kissfft is initialized */
     task verifyKissfftInitialized {
-        if(!(new File("noise/src/main/native/kissfft/kiss_fft.c").exists()))
+        if (!(new File("noise/src/main/native/kissfft/kiss_fft.c").exists()))
             throw new Exception('Initialize git submodules before building (read "development" section in readme)')
     }
 
