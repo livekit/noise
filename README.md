@@ -11,25 +11,17 @@ Noise features an api that is designed to be easy to use, and familiar for Andro
 (JNI bindings are available as well)
 
 ## Sample app
+
 Watch Noise compute FFT in real time from your microphone, the sample app is on [Google Play][play]!
 
 [![Sample app preview](sample_preview.gif)](sample_preview.gif)
 
 ## Get started
 
-Add jitpack.io repo to your root `build.gradle`:
-    
-    allprojects {
-        repositories {
-            //...
-            maven { url "https://jitpack.io" }
-        }
-    }
-
 Include in Android project:
 
-    implementation 'com.github.paramsen:noise:2.0.0'
-    
+    implementation 'io.livekit:noise:2.0.0'
+
 ## Instructions
 
 This lib is a Kotlin wrapper for kissfft, consult the [kissfft readme][kissfft] if you want
@@ -40,6 +32,7 @@ Noise supports computing DFT from real and imaginary input data.
 #### Real input
 
 Instantiate, this example is configured to compute DFT:s on input arrays of size 4096.
+
 ```
 Noise noise = Noise.real(4096) //input size == 4096
 ```
@@ -76,9 +69,10 @@ This example is configured to compute DFT:s on input arrays of size 8192 (4096 [
 Noise noise = Noise.imaginary(8192) //input size == 8192
 ```
 
-In order to compute a DFT from imaginary input, we need to structure our real+imaginary pairs in a 
-flat, one dimensional array. Thus the input array has pairs of real+imaginary like; 
+In order to compute a DFT from imaginary input, we need to structure our real+imaginary pairs in a
+flat, one dimensional array. Thus the input array has pairs of real+imaginary like;
 float[0] = firstReal, float[1] = firstImaginary, float[2] = secondReal, float[3] = secondImaginary..
+
 ```
 float[] imaginaryInput = new float[8192];
     
@@ -128,12 +122,13 @@ for(int i = 0; i < fft.length / 2; i++) {
 ## Sample code
 
 I've written a sample app in Kotlin which computes FFT:s on the real time microphone signal. It
-features some [cool Rx solutions][rx] for mic integration that might be interesting in themselves. It's 
+features some [cool Rx solutions][rx] for mic integration that might be interesting in themselves. It's
 on [Google Play][play] and the source can be found in the [sample module][sample].
 
 ## Performance tests
 
-The following tests measure the average FFT computation time over 1000 computations for an array of length 4096. Run on a new S8+ and an old LG G3 for comparison.
+The following tests measure the average FFT computation time over 1000 computations for an array of length 4096. Run on a new S8+ and an old
+LG G3 for comparison.
 
 **Samsung S8+:**
 
@@ -179,16 +174,23 @@ Release steps are:
 1. Bump version in `noise/build.gradle`
 2. Run `./gradlew release` in project root (generates readme)
 3. Push generated readme changes to repo
-4. Wait for JitPack to build
+4. Run `./gradlew publishReleasePublicationToMavenRepository closeAndReleaseMavenStagingRepository` to publish to Maven
 
 ## License
+
 Noise is licensed under the Apache 2.0.  
 Kissfft is licensed under the Revised BSD License.
 
 [kissfft]: https://github.com/mborgerding/kissfft
+
 [play]: https://play.google.com/store/apps/details?id=com.paramsen.noise.sample
+
 [rx]: https://github.com/paramsen/noise/blob/master/sample/src/main/java/com/paramsen/noise/sample/view/MainActivity.kt#L56
+
 [sample]: https://github.com/paramsen/noise/tree/master/sample
+
 [tests]: https://github.com/paramsen/noise/blob/master/tester/src/androidTest/java/com/paramsen/noise/tester/NoiseInstrumentationTest.java
+
 [cTests]: https://github.com/paramsen/noise/blob/master/cpp_test_data_suite/kiss_fft_tester.cpp
+
 [benchmarks]: https://browser.geekbench.com/android-benchmarks
